@@ -44,7 +44,7 @@ meta_local <- function(file, search_term,
     idx <- intersect(idx, which(singleprob < 0.5))
   }
   idx <- sort(unique(idx))
-  counts <- index(file, idx, silent = silent)
+  counts <- a4.data.index(file, idx, silent = silent)
   return(counts)
 }
 
@@ -64,7 +64,7 @@ rand_local <- function(file, number, remove_sc, silent = FALSE) {
     total <- length(gsm_ids)
     idx <- sort(sample(seq_len(total), number))
   }
-  return(index(file, idx, silent = silent))
+  return(a4.data.index(file, idx, silent = silent))
 }
 
 # series: retrieve samples belonging to a specific series_id.
@@ -76,7 +76,7 @@ series_local <- function(file, series_id, silent = FALSE) {
   series_vec <- h5read(file, "meta/samples/series_id")
   idx <- which(series_vec == series_id)
   if (length(idx) > 0)
-    return(index(file, idx, silent = silent))
+    return(a4.data.index(file, idx, silent = silent))
   else
     return(NULL)
 }
@@ -91,7 +91,7 @@ samples_local <- function(file, sample_ids, silent = FALSE) {
   gsm_ids <- h5read(file, "meta/samples/geo_accession")
   idx <- which(gsm_ids %in% sample_ids)
   if (length(idx) > 0)
-    return(index(file, idx, silent = silent))
+    return(a4.data.index(file, idx, silent = silent))
   else
     return(NULL)
 }
