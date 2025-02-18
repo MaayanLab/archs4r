@@ -9,5 +9,5 @@ Install directly from GitHub:
 ```R
 install.packages("devtools")  # or "remotes"
 library("devtools")
-install.packages("MaayanLab/archs4r")
+install_github("MaayanLab/archs4r")
 ```
