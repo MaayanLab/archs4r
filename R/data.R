@@ -113,11 +113,10 @@ a4.data.index <- function(file, sample_idx, gene_idx = integer(0), silent = FALS
   gsm_ids <- gsm_ids[sample_idx]
   
   # Read the expression data and subset rows (genes) and columns (samples)
-  exp_data <- h5read(file, "data/expression")
-  exp_subset <- exp_data[gene_idx, sample_idx, drop = FALSE]
+  exp_data <- h5read(file, "data/expression", index = list(gene_idx, sample_idx))
   
   # Form a data.frame (using genes as rownames and sample IDs as column names)
-  df <- as.data.frame(exp_subset, stringsAsFactors = FALSE)
+  df <- as.data.frame(exp_data, stringsAsFactors = FALSE)
   rownames(df) <- genes[gene_idx]
   colnames(df) <- gsm_ids
   return(df)
@@ -147,8 +146,8 @@ get_encoding <- function(file) {
 get_sample <- function(file, i, gene_idx) {
   res <- tryCatch({
     exp_data <- h5read(file, "data/expression")
-    temp <- exp_data[gene_idx, i]
-    temp
+    exp_data <- h5read(file, "data/expression", index = list(gene_idx, i))
+    exp_data
   }, error = function(e) {
     rep(0, length(gene_idx))
   })
