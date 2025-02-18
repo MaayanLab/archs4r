@@ -1,63 +1,158 @@
 library("rhdf5")
 library("stringr")
 
+# Clean a string by removing underscores, dashes, quotes, slashes, spaces, and dots,
+# then making it uppercase.
+clean_string <- function(x) {
+  toupper(gsub("(_|-|'|/| |\\.)", "", x))
+}
 
-a4.data.meta <- function(file, search_term, meta_fields=c("characteristics_ch1", "extract_protocol_ch1", "source_name_ch1", "title")){
-  search_term <- toupper(str_replace_all(search_term, "_|-|'|/| |\\.", ""))
-  idx = c()
-  for(mfield in meta_fields){
-    meta = h5read(file, paste0("meta/samples/", mfield))
-    cleaned_meta <- toupper(gsub("_|-|'|/|\\.", "", meta))
-    idx <- append(idx, grep(search_term, cleaned_meta))
+# meta: searches the metadata of an HDF5 file for a given search term.
+a4.data.meta <- function(file, search_term,
+                 meta_fields = c("geo_accession", "series_id", "characteristics_ch1",
+                                 "extract_protocol_ch1", "source_name_ch1", "title"),
+                 remove_sc = FALSE, silent = FALSE) {
+  # Clean the search term
+  search_term_clean <- clean_string(search_term)
+  if (!silent)
+    cat("Searching for any occurrence of", search_term_clean, "as regular expression\n")
+  meta_local(file, search_term_clean, meta_fields, remove_sc, silent)
+}
+
+# meta_local: For each metadata field present in the HDF5 file, search for match(es)
+# with the prepared search term; optionally remove samples with singlecellprobability ≥ 0.5.
+meta_local <- function(file, search_term,
+                       meta_fields = c("geo_accession", "series_id", "characteristics_ch1",
+                                       "extract_protocol_ch1", "source_name_ch1", "title"),
+                       remove_sc = FALSE, silent = FALSE) {
+  # List available entries under the meta/samples group
+  ls_meta <- h5ls(file, recursive = TRUE)
+  samples_fields <- ls_meta$name[ls_meta$group == "/meta/samples"]
+  
+  idx <- integer(0)
+  for (field in meta_fields) {
+    if (field %in% samples_fields) {
+      # Read the metadata values
+      meta_values <- h5read(file, paste0("meta/samples/", field))
+      meta_clean <- clean_string(meta_values)
+      # Find indices where the search term is present using regular expression matching
+      matches <- which(grepl(search_term, meta_clean, perl = TRUE))
+      idx <- union(idx, matches)
+    }
   }
-  idx = sort(unique(idx))
-  return(a4.data.index(file, idx))
+  if (remove_sc) {
+    # Read the single-cell probability values and select those below 0.5
+    singleprob <- h5read(file, "meta/samples/singlecellprobability")
+    idx <- intersect(idx, which(singleprob < 0.5))
+  }
+  idx <- sort(unique(idx))
+  counts <- index(file, idx, silent = silent)
+  return(counts)
 }
 
-a4.data.series <- function(file, series){
-  h5_series = h5read(file, "meta/samples/series_id")
-  samples = h5read(file, "meta/samples/geo_accession")
-  genes = h5read(file, "meta/genes/symbol")
-
-  series_locations = which(h5_series == series)
-
-  expression = t(h5read(file, "data/expression", index=list(series_locations, 1:length(genes))))
-  rownames(expression) = genes
-  colnames(expression) = samples[series_locations]
-
-  return(expression)
+# rand: randomly select a given number of samples.
+a4.data.rand <- function(file, number, seed = 1, remove_sc = FALSE, silent = FALSE) {
+  set.seed(seed)
+  rand_local(file, number, remove_sc, silent)
 }
 
-a4.data.samples <- function(file, samples) {
-  samples <- unique(samples)
-
-  h5_samples = h5read(file, "meta/samples/geo_accession")
-  genes = h5read(file, "meta/genes/symbol")
-
-  sample_locations = which(h5_samples %in% samples)
-
-  expression = t(h5read(file, "data/expression", index=list(sample_locations, 1:length(genes))))
-  rownames(expression) = genes
-  colnames(expression) = h5_samples[sample_locations]
-
-  return(expression)
+rand_local <- function(file, number, remove_sc, silent = FALSE) {
+  gsm_ids <- h5read(file, "meta/samples/geo_accession")
+  if (remove_sc) {
+    singleprob <- h5read(file, "meta/samples/singlecellprobability")
+    eligible <- which(singleprob < 0.5)
+    idx <- sort(sample(eligible, number))
+  } else {
+    total <- length(gsm_ids)
+    idx <- sort(sample(seq_len(total), number))
+  }
+  return(index(file, idx, silent = silent))
 }
 
-a4.data.rand <- function(file, N) {
-  samples = h5read(file, "meta/samples/geo_accession")
-  random_idx <- sort(sample(0:length(samples), N, replace = FALSE))
-  return(a4.data.index(file, random_idx))
+# series: retrieve samples belonging to a specific series_id.
+a4.data.series <- function(file, series_id, silent = FALSE) {
+  series_local(file, series_id, silent)
 }
 
-a4.data.index <- function(file, idx) {
-  samples <- unique(samples)
+series_local <- function(file, series_id, silent = FALSE) {
+  series_vec <- h5read(file, "meta/samples/series_id")
+  idx <- which(series_vec == series_id)
+  if (length(idx) > 0)
+    return(index(file, idx, silent = silent))
+  else
+    return(NULL)
+}
 
-  samples = h5read(file, "meta/samples/geo_accession")[idx]
-  genes = h5read(file, "meta/genes/symbol")
+# samples: retrieve samples by a list of geo_accession identifiers.
+a4.data.samples <- function(file, sample_ids, silent = FALSE) {
+  samples_local(file, sample_ids, silent)
+}
 
-  expression = t(h5read(file, "data/expression", index=list(idx, 1:length(genes))))
-  rownames(expression) = genes
-  colnames(expression) = samples
+samples_local <- function(file, sample_ids, silent = FALSE) {
+  sample_ids <- as.character(sample_ids)
+  gsm_ids <- h5read(file, "meta/samples/geo_accession")
+  idx <- which(gsm_ids %in% sample_ids)
+  if (length(idx) > 0)
+    return(index(file, idx, silent = silent))
+  else
+    return(NULL)
+}
 
-  return(expression)
+# index: load gene expression data for given sample indices (and an optional set of genes).
+# It determines the gene names via get_encoding(), reads the expression dataset,
+# subsets the data, and returns a data.frame.
+a4.data.index <- function(file, sample_idx, gene_idx = integer(0), silent = FALSE) {
+  sample_idx <- sort(sample_idx)
+  gene_idx <- sort(gene_idx)
+  
+  # Retrieve the gene label field (e.g., gene_symbol or symbol)
+  row_encoding <- get_encoding(file)
+  genes <- h5read(file, row_encoding)
+  if (length(gene_idx) == 0)
+    gene_idx <- seq_along(genes)
+  
+  gsm_ids <- h5read(file, "meta/samples/geo_accession")
+  gsm_ids <- gsm_ids[sample_idx]
+  
+  # Read the expression data and subset rows (genes) and columns (samples)
+  exp_data <- h5read(file, "data/expression")
+  exp_subset <- exp_data[gene_idx, sample_idx, drop = FALSE]
+  
+  # Form a data.frame (using genes as rownames and sample IDs as column names)
+  df <- as.data.frame(exp_subset, stringsAsFactors = FALSE)
+  rownames(df) <- genes[gene_idx]
+  colnames(df) <- gsm_ids
+  return(df)
+}
+
+# get_encoding: Determines which metadata field contains gene (or transcript) identifiers.
+get_encoding <- function(file) {
+  ls_meta <- h5ls(file, recursive = TRUE)
+  # Check if the 'meta/genes' group exists and whether it has a gene_symbol or symbol field.
+  genes_group <- ls_meta$name[ls_meta$group == "/meta/genes"]
+  if ("gene_symbol" %in% genes_group)
+    return("meta/genes/gene_symbol")
+  else if ("symbol" %in% genes_group)
+    return("meta/genes/symbol")
+  
+  # Otherwise, look for a transcripts group with ensembl_id.
+  transcripts_group <- ls_meta$name[ls_meta$group == "/meta/transcripts"]
+  if ("ensembl_id" %in% transcripts_group)
+    return("meta/transcripts/ensembl_id")
+  
+  stop("error in gene/transcript meta data")
+}
+
+# Optionally, a helper to get a single sample’s expression (if needed separately);
+# here we open the file, extract column i of the high-dimensional dataset,
+# and then subset by gene_idx.
+get_sample <- function(file, i, gene_idx) {
+  res <- tryCatch({
+    exp_data <- h5read(file, "data/expression")
+    temp <- exp_data[gene_idx, i]
+    temp
+  }, error = function(e) {
+    rep(0, length(gene_idx))
+  })
+  return(res)
 }

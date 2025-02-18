@@ -4,6 +4,8 @@
 .Ruserdata
 .DS_Store
 
+test/*
+
 # .gitignore for R Projects
 
 # History files
