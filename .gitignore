@@ -11,14 +11,14 @@
 .Rapp.history
 
 # Session Data files
-.RData
+*.RData
 
 # User-specific files
 .Ruserdata
 
 # RStudio project files
 *.Rproj
-.Rproj.user/
+.Rproj.user/~
 
 # build artifacts from R CMD build/check
 .Rcheck/
