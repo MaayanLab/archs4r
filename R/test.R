@@ -1,4 +1,3 @@
-library("rhdf5")
 
 destination_file = "/Users/maayanlab/Documents/human_gene_v2.6.h5"
 

@@ -1,4 +1,3 @@
-library("rhdf5")
 
 # Helper: convert a vector of strings to uppercase.
 to_upper <- function(x) {

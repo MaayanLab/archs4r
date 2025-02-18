@@ -1,5 +1,3 @@
-library("rhdf5")
-library("stringr")
 
 # Clean a string by removing underscores, dashes, quotes, slashes, spaces, and dots,
 # then making it uppercase.

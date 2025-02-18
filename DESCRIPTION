@@ -11,4 +11,6 @@ LazyData: true
 Depends:
   rhdf5,
   stringr,
-  bit64
+  bit64,
+  preprocessCore,
+  jsonlite

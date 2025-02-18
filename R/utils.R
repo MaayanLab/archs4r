@@ -1,5 +1,3 @@
-library("jsonlite")
-library("preprocessCore")
 
 # 1. get_config()
 # Read a JSON configuration file from the relative data folder.
