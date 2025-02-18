@@ -55,3 +55,21 @@ df_series <- a4.data.series(h5file, "GSE64016")
 # Select specific samples by their geo_accession IDs
 df_samples <- a4.data.samples(h5file, c("GSM1158284","GSM1482938","GSM1562817"))
 ```
+
+### Utilities
+
+```R
+h5file = "human_gene_v2.latest.h5"
+
+# List H5 file structure and fields
+a4.ls(h5file)
+
+exp = a4.data.rand(h5file, 100)
+normalized_exp = a4.normalize((exp, method = "log_quantile") # method options: log_quantile, cpm, tmm, quantile
+
+# filter genes with low expression
+fexp = a4.filter_genes(exp, readThreshold = 20, sampleThreshold = 0.02, deterministic = TRUE, aggregate = TRUE)
+
+# Merge counts when ensembl ids point to the sample gene symbol. Counts are added.
+dexp = a4.aggregate_duplicate_genes(exp)
+```
