@@ -1,5 +1,5 @@
 
-destination_file = "/Users/maayanlab/Documents/human_gene_v2.6.h5"
+destination_file = "/Users/maayanlab/Downloads/human_gene_v2.6.h5"
 
 samples = h5read(destination_file, "meta/samples/geo_accession")
 genes = h5read(destination_file, "meta/genes/symbol")
