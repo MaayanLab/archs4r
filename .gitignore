@@ -3,3 +3,41 @@
 .RData
 .Ruserdata
 .DS_Store
+
+# .gitignore for R Projects
+
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+
+# User-specific files
+.Ruserdata
+
+# RStudio project files
+*.Rproj
+.Rproj.user/
+
+# build artifacts from R CMD build/check
+.Rcheck/
+
+# Output files from package vignettes (if not needed)
+vignettes/*.html
+vignettes/*.pdf
+
+# Produced documentation and man pages
+man/*.Rd
+
+# Dependency directories often created by packrat or renv (if not version-controlled)
+packrat/
+renv/library/
+
+# Temporary files
+*.tmp
+*.log
+
+# Local builds & archives
+*.tar.gz
+*.zip
