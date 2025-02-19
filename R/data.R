@@ -27,6 +27,8 @@ meta_local <- function(file, search_term,
   fid <- H5Fopen(h5file)
   gid <- H5Gopen(fid, "/meta/samples")
   meta_fields <- h5ls(gid, recursive = FALSE)$name
+  H5Gclose(gid)
+  H5Fclose(fid)
   idx <- integer(0)
   for (field in meta_fields) {
     if (field %in% samples_fields) {
