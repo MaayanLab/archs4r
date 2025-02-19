@@ -21,7 +21,7 @@ a4.data.meta <- function(file, search_term,
 # with the prepared search term; optionally remove samples with singlecellprobability ≥ 0.5.
 meta_local <- function(file, search_term,
                        meta_fields = c("characteristics_ch1",
-                                       "source_name_ch1", "title"),
+                                       "extract_protocol_ch1", "source_name_ch1", "title"),
                        remove_sc = FALSE, silent = FALSE) {
   idx <- integer(0)
   for (field in meta_fields) {
@@ -31,7 +31,6 @@ meta_local <- function(file, search_term,
       # Find indices where the search term is present using regular expression matching
       matches <- which(grepl(search_term, meta_clean, perl = TRUE))
       idx <- union(idx, matches)
-    }
   }
   if (remove_sc) {
     # Read the single-cell probability values and select those below 0.5
