@@ -24,9 +24,9 @@ meta_local <- function(file, search_term,
                                        "extract_protocol_ch1", "source_name_ch1", "title"),
                        remove_sc = FALSE, silent = FALSE) {
   # List available entries under the meta/samples group
-  ls_meta <- h5ls(file, recursive = TRUE)
-  samples_fields <- ls_meta$name[ls_meta$group == "/meta/samples"]
-  
+  fid <- H5Fopen(h5file)
+  gid <- H5Gopen(fid, "/meta/samples")
+  meta_fields <- h5ls(gid, recursive = FALSE)$name
   idx <- integer(0)
   for (field in meta_fields) {
     if (field %in% samples_fields) {
