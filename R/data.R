@@ -7,8 +7,7 @@ clean_string <- function(x) {
 
 # meta: searches the metadata of an HDF5 file for a given search term.
 a4.data.meta <- function(file, search_term,
-                 meta_fields = c("geo_accession", "series_id", "characteristics_ch1",
-                                 "extract_protocol_ch1", "source_name_ch1", "title"),
+                 meta_fields = c("characteristics_ch1", "source_name_ch1", "title"),
                  remove_sc = FALSE, silent = FALSE) {
   # Clean the search term
   search_term_clean <- clean_string(search_term)
