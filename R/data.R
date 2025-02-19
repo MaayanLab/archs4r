@@ -20,18 +20,11 @@ a4.data.meta <- function(file, search_term,
 # meta_local: For each metadata field present in the HDF5 file, search for match(es)
 # with the prepared search term; optionally remove samples with singlecellprobability ≥ 0.5.
 meta_local <- function(file, search_term,
-                       meta_fields = c("geo_accession", "series_id", "characteristics_ch1",
-                                       "extract_protocol_ch1", "source_name_ch1", "title"),
+                       meta_fields = c("characteristics_ch1",
+                                       "source_name_ch1", "title"),
                        remove_sc = FALSE, silent = FALSE) {
-  # List available entries under the meta/samples group
-  fid <- H5Fopen(h5file)
-  gid <- H5Gopen(fid, "/meta/samples")
-  meta_fields <- h5ls(gid, recursive = FALSE)$name
-  H5Gclose(gid)
-  H5Fclose(fid)
   idx <- integer(0)
   for (field in meta_fields) {
-    if (field %in% samples_fields) {
       # Read the metadata values
       meta_values <- h5read(file, paste0("meta/samples/", field))
       meta_clean <- clean_string(meta_values)
