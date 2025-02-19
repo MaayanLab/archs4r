@@ -100,26 +100,20 @@ samples_local <- function(file, sample_ids, silent = FALSE) {
 # It determines the gene names via get_encoding(), reads the expression dataset,
 # subsets the data, and returns a data.frame.
 a4.data.index <- function(file, sample_idx, gene_idx = integer(0), silent = FALSE) {
+  sample_idx = 1:10
+  gene_idx = integer(0)
   sample_idx <- sort(sample_idx)
   gene_idx <- sort(gene_idx)
-  
-  # Retrieve the gene label field (e.g., gene_symbol or symbol)
-  row_encoding <- get_encoding(file)
-  genes <- h5read(file, row_encoding)
+  genes <- h5read(file, "meta/genes/symbol")
   if (length(gene_idx) == 0)
-    gene_idx <- seq_along(genes)
-  
+      gene_idx <- seq_along(genes)
   gsm_ids <- h5read(file, "meta/samples/geo_accession")
   gsm_ids <- gsm_ids[sample_idx]
-  
-  # Read the expression data and subset rows (genes) and columns (samples)
+
   exp_data <- h5read(file, "data/expression", index = list(gene_idx, sample_idx))
-  
-  # Form a data.frame (using genes as rownames and sample IDs as column names)
-  df <- as.data.frame(exp_data, stringsAsFactors = FALSE)
-  rownames(df) <- genes[gene_idx]
-  colnames(df) <- gsm_ids
-  return(df)
+  rownames(exp_data) <- genes[gene_idx]
+  colnames(exp_data) <- gsm_ids
+  return(exp_data)
 }
 
 # get_encoding: Determines which metadata field contains gene (or transcript) identifiers.
@@ -138,18 +132,4 @@ get_encoding <- function(file) {
     return("meta/transcripts/ensembl_id")
   
   stop("error in gene/transcript meta data")
-}
-
-# Optionally, a helper to get a single sample’s expression (if needed separately);
-# here we open the file, extract column i of the high-dimensional dataset,
-# and then subset by gene_idx.
-get_sample <- function(file, i, gene_idx) {
-  res <- tryCatch({
-    exp_data <- h5read(file, "data/expression")
-    exp_data <- h5read(file, "data/expression", index = list(gene_idx, i))
-    exp_data
-  }, error = function(e) {
-    rep(0, length(gene_idx))
-  })
-  return(res)
 }
