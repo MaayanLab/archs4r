@@ -100,8 +100,6 @@ samples_local <- function(file, sample_ids, silent = FALSE) {
 # It determines the gene names via get_encoding(), reads the expression dataset,
 # subsets the data, and returns a data.frame.
 a4.data.index <- function(file, sample_idx, gene_idx = integer(0), silent = FALSE) {
-  sample_idx = 1:10
-  gene_idx = integer(0)
   sample_idx <- sort(sample_idx)
   gene_idx <- sort(gene_idx)
   genes <- h5read(file, "meta/genes/symbol")
