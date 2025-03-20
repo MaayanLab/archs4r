@@ -13,4 +13,5 @@ Depends:
   stringr,
   bit64,
   preprocessCore,
-  jsonlite
+  jsonlite,
+  dplyr

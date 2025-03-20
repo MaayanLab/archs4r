@@ -17,7 +17,7 @@ a4.versions <- function() {
   return(vers)
 }
 
-# 3. normalize()
+
 # Normalize a count matrix (data.frame or matrix) according to the chosen method.
 a4.normalize <- function(counts, method = "log_quantile", tmm_outlier = 0.05) {
   norm_exp <- NULL
@@ -33,12 +33,19 @@ a4.normalize <- function(counts, method = "log_quantile", tmm_outlier = 0.05) {
   } else {
     stop(paste("Unsupported normalization method:", method))
   }
-  # Return the result as a data.frame with the same row and column names as counts.
-  norm_exp <- as.data.frame(norm_exp, stringsAsFactors = FALSE)
+  
+  # Keep as matrix instead of converting to data.frame
+  # Assign row and column names directly
   rownames(norm_exp) <- rownames(counts)
   colnames(norm_exp) <- colnames(counts)
+  
+  # Debugging output (optional)
+  print("Normalization completed")
+  
+  # Return the matrix
   return(norm_exp)
 }
+
 
 # 4. tmm_norm()
 # Apply a trimmed mean normalization on the log2(counts + 1) values.
@@ -90,43 +97,52 @@ cpm_normalization <- function(df) {
   return(normalized_df)
 }
 
-# 7. ls()
-# List all meta data groups and meta data fields in an H5 file.
-a4.ls <- function(file) {
-  # List objects in the HDF5 file using h5ls()
-  ls_result <- h5ls(file)
-  # A helper function to print each object similar to the Python code.
-  print_data <- function(name, obj, prefix="") {
-    if (obj$class == "H5D") {  # Dataset
-      # Try to mimic data type reporting and shape.
-      data_type <- as.character(obj$dclass)
-      shape <- paste(obj$dim, collapse = " x ")
-      cat(sprintf("%s%-20s  %-6s | %s\n", prefix, name, data_type, shape))
-    } else {
-      cat(sprintf("%s%-26s\n", prefix, name))
-    }
-    # Attributes (if any) may be obtained by h5readAttributes
-    # (Not all objects have attributes; skip them if none)
-    attr_list <- tryCatch(h5readAttributes(file, obj$fullname), error = function(e) list())
-    if (length(attr_list) > 0) {
-      for (key in names(attr_list)) {
-        cat(sprintf("%s   %-11s : %s\n", prefix, key, as.character(attr_list[[key]])))
-      }
-    }
-  }
-  # Print top-level objects
-  top_level <- unique(ls_result$group)
-  for (grp in unique(ls_result$group)) {
-    # Get objects in this group.
-    sub_objs <- ls_result[ls_result$group == grp, ]
-    for (i in seq_len(nrow(sub_objs))) {
-      print_data(sub_objs$name[i], sub_objs[i, ])
-    }
-  }
+get_dataset_dims <- function(h5file, dataset_path) {
+  fid <- H5Fopen(h5file)
+  on.exit(H5Fclose(fid))
+  did <- H5Dopen(fid, dataset_path)
+  on.exit(H5Dclose(did), add = TRUE)
+  space <- H5Dget_space(did)
+  on.exit(H5Sclose(space), add = TRUE)
+  dims <- H5Sget_simple_extent_dims(space)$size
+  return(rev(dims))  # Reverse dimensions as per your example
 }
 
-# 8. aggregate_duplicate_genes()
-# Sum values for duplicate genes (rows with identical row names).
+
+a4.ls <- function(h5file) {
+  fid <- H5Fopen(h5file)
+  gid <- H5Gopen(fid, "/meta/samples")
+  ggid <- H5Gopen(fid, "/meta/genes")
+  iid <- H5Gopen(fid, "/meta/info")
+  d1 = h5ls(iid, recursive = FALSE)
+  d2 = h5ls(gid, recursive = FALSE)
+  d3 = h5ls(ggid, recursive = FALSE)
+  # Clean up by closing the group and file handles
+  H5Gclose(ggid)
+  H5Gclose(gid)
+  H5Fclose(fid)
+
+  exp_dims <- get_dataset_dims(h5file, "data/expression")
+  exp_type <- 'INTEGER'
+
+  # Create a dataframe for "data/expression"
+  exp_df <- data.frame(
+    group = "/data",
+    name = "expression",
+    otype = "H5I_DATASET",
+    dclass = exp_type,
+    dim = paste(exp_dims, collapse = " x "),
+    stringsAsFactors = FALSE
+  )
+
+  d1 <- d1 %>% mutate(group = "/meta/info")
+  d2 <- d2 %>% mutate(group = "/meta/samples")
+  d3 <- d3 %>% mutate(group = "/meta/genes")
+
+  combined_df <- bind_rows(exp_df, d1, d3, d2)
+  combined_df
+}
+
 a4.aggregate_duplicate_genes <- function(exp) {
   # Use rowsum: rownames(exp) is used as a grouping factor.
   # Convert data.frame to matrix if needed.
