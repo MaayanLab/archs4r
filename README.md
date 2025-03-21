@@ -10,19 +10,20 @@
 To get started with `archs4r`, you need R installed on your system. The package depends on the `rhdf5` package from Bioconductor to handle HDF5 files. Follow these steps to install `archs4r`:
 
 1. **Install the `devtools` package** (if not already installed):
-   ```R
-    install.packages("devtools")
-    ```
+```R
+ install.packages("devtools")
+ ```
 2. **Install the `archs4` package**
-   ```R
-   library("devtools")
-   install_github("MaayanLab/archs4r")
-   ```
-
+```R
+library("devtools")
+install_github("MaayanLab/archs4r")
+```
+3. **Manual install of dependencies**
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("rhdf5")
+BiocManager::install("prerpocessCore")
 ```
 
 ## Usage
