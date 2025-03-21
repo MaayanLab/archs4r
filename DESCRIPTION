@@ -8,10 +8,11 @@ Description: ARCHS4r is the official R package for the ARCHS4 gene expresson res
 License: Apache License (>= 2.0)
 Encoding: UTF-8
 LazyData: true
-Imports:
+Depends:
   rhdf5,
+  preprocessCore
+Imports:
   stringr,
   bit64,
-  preprocessCore,
   jsonlite,
   dplyr
