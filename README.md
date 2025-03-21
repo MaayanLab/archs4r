@@ -35,9 +35,18 @@ The archs4r package requires ARCHS4 data files in HDF5 format, which contain gen
 
 ## Usage
 
+The archs4r package is organized into three main modules: Metadata, Data, and Utilities. Below are detailed descriptions and examples for each.
+
 ### Metadata
 
-The metadata module allows the extraction of metadata about genes/transcripts and samples.
+The Metadata module enables users to extract and query metadata related to genes, transcripts, and samples in the ARCHS4 dataset.
+
+- **a4.meta.meta(h5file, pattern):** Search for samples whose metadata contains a specific pattern (e.g., "liver").
+  ```R
+  library(archs4r)
+  h5file <- "human_gene_v2.latest.h5"
+  df_meta <- a4.meta.meta(h5file, "liver")
+  ```
 
 ```R
 library("archs4r")
