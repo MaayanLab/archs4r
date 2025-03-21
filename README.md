@@ -1,5 +1,5 @@
 # archs4r
-R package to load and query ARCHS4 data in R
+R package to load and query ARCHS4 data in R. Data can be downloaded from: https://archs4.org/download
 
 
 ## Installation
