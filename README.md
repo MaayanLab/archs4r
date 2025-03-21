@@ -26,6 +26,10 @@ BiocManager::install("rhdf5")
 BiocManager::install("prerpocessCore")
 ```
 
+### Obtaining ARCHS4 Data
+
+The archs4r package requires ARCHS4 data files in HDF5 format, which contain gene expression data and associated metadata. Download the latest versions from the <a href="https://archs4.org/download" target="_blank">ARCHS4 download page</a>. After downloading, note the file path (e.g., "path/to/human_gene_v2.latest.h5") as it will be needed for package functions.
+
 ## Usage
 
 ### Metadata
