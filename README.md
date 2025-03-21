@@ -5,6 +5,14 @@
 
 **archs4r** is an R package designed to streamline the loading and querying of ARCHS4 data directly within the R environment. ARCHS4 (All RNA-seq and ChIP-seq Sample and Signature Search) is a comprehensive resource offering access to a vast collection of gene expression data derived from RNA-seq experiments. This package empowers users to efficiently access, manipulate, and analyze ARCHS4 data for a wide range of bioinformatics applications.
 
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Quick Start Guide](#quick)
+    - [Metadata](#meta)
+    - [Data](#data)
+    - [Utilities](#utilities)
+
 ## Installation
 
 To get started with `archs4r`, you need R installed on your system. The package depends on the `rhdf5` package from Bioconductor to handle HDF5 files. Follow these steps to install `archs4r`:
@@ -36,6 +44,40 @@ The archs4r package requires ARCHS4 data files in HDF5 format, which contain gen
 ## Usage
 
 The archs4r package is organized into three main modules: Metadata, Data, and Utilities. Below are detailed descriptions and examples for each.
+
+### Quick Start Guide
+
+This workflow provides a foundation for analyzing myoblast-related RNA-seq data from ARCHS4. Adjust parameters (e.g., search_term, readThreshold) as needed for your research question.
+
+```R
+# Load library
+library(archs4r)
+
+# Set file path
+h5file <- "path/to/human_gene_v2.latest.h5"
+
+# List file contents
+structure <- a4.ls(h5file)
+print(structure)
+
+# Extract myoblast expression
+myoblast_exp <- a4.data.meta(h5file, "myoblast", c("title", "source_name_ch1"), remove_sc = TRUE)
+
+# Get metadata for samples
+myoblast_samples <- colnames(myoblast_exp)
+myoblast_meta <- a4.meta.samples(h5file, myoblast_samples, c("geo_accession", "title", "source_name_ch1", "series_id"))
+
+# Filter genes and aggregate duplicates
+filtered_exp <- a4.filter_genes(myoblast_exp, readThreshold = 20, sampleThreshold = 0.02, aggregate = TRUE)
+
+# Log quantile normalization
+normalized_exp <- a4.normalize(filtered_exp, method = "log_quantile")
+
+# Inspect results
+dim(normalized_exp)
+print(head(normalized_exp[, 1:5]))
+```
+
 
 ### Metadata
 
