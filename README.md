@@ -30,6 +30,10 @@ BiocManager::install("prerpocessCore")
 
 The archs4r package requires ARCHS4 data files in HDF5 format, which contain gene expression data and associated metadata. Download the latest versions from the <a href="https://archs4.org/download" target="_blank">ARCHS4 download page</a>. After downloading, note the file path (e.g., "path/to/human_gene_v2.latest.h5") as it will be needed for package functions.
 
+**ARCHS4r** can interact with gene and transcript level files
+![image](https://github.com/user-attachments/assets/f2de5f94-a790-42fb-b99e-cd77c74642eb)
+
+
 ## Usage
 
 ### Metadata
