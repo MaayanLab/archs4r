@@ -158,25 +158,97 @@ Fetches metadata for all samples within a specified GEO series.
 
 ### Data
 
-The data module has endpoints similar to those of the metadata module but instead returns gene/transcript expression matrices.
+The **Data** module in `archs4r` provides functions to retrieve gene expression matrices from ARCHS4 HDF5 files based on metadata searches, random sampling, GEO series, or specific sample IDs. These functions rely on the underlying `a4.data.index` helper function to extract expression data.
 
-```R
-library("archs4r")
+#### `a4.data.meta`
 
-h5file = "human_gene_v2.latest.h5"
+Fetches expression data for samples whose metadata matches a given search term across specified fields.
 
-# Search metadata for a pattern (e.g. "liver")
-df_meta <- a4.data.meta(h5file, "liver")
+- **Parameters**:
+  - `file`: Path to the ARCHS4 HDF5 file (e.g., `"human_gene_v2.latest.h5"`).
+  - `search_term`: A string to search for in metadata using regular expressions (e.g., `"liver"`).
+  - `meta_fields`: A character vector of metadata fields to search. Defaults to `c("characteristics_ch1", "source_name_ch1", "title")`.
+  - `remove_sc`: Logical; if `TRUE`, excludes samples with single-cell probability ≥ 0.5. Defaults to `FALSE`.
+  - `silent`: Logical; if `FALSE`, prints search progress. Defaults to `FALSE`.
 
-# Randomly select 5 samples
-df_rand <- a4.data.rand(h5file, 20, seed = 123)
+- **Returns**: A matrix of expression counts where rows are genes and columns are matching samples.
 
-# Select samples from a given series
-df_series <- a4.data.series(h5file, "GSE64016")
+- **Example**:
+  ```R
+  library(archs4r)
+  h5file <- "human_gene_v2.latest.h5"
+  df_meta <- a4.data.meta(h5file, "liver", meta_fields = c("title", "source_name_ch1"), remove_sc = TRUE)
+  ```
 
-# Select specific samples by their geo_accession IDs
-df_samples <- a4.data.samples(h5file, c("GSM1158284","GSM1482938","GSM1562817"))
-```
+#### `a4.data.rand`
+
+Randomly selects a specified number of samples and returns their expression data.
+
+- **Parameters**:
+  - `file`: Path to the ARCHS4 HDF5 file.
+  - `number`: Integer; the number of samples to randomly select.
+  - `seed`: Integer; seed for reproducibility of random sampling. Defaults to `1`.
+  - `remove_sc`: Logical; if `TRUE`, excludes single-cell samples (probability ≥ 0.5). Defaults to `FALSE`.
+  - `silent`: Logical; if `FALSE`, passed to `a4.data.index` for verbosity. Defaults to `FALSE`.
+
+- **Returns**: A matrix of expression counts where rows are genes and columns are randomly selected samples.
+
+- **Example**:
+  ```R
+  df_rand <- a4.data.rand(h5file, 20, seed = 123, remove_sc = TRUE)
+  ```
+
+#### `a4.data.series`
+
+Retrieves expression data for all samples in a specified GEO series.
+
+- **Parameters**:
+  - `file`: Path to the ARCHS4 HDF5 file.
+  - `series_id`: A string specifying the GEO series ID (e.g., `"GSE64016"`).
+  - `silent`: Logical; if `FALSE`, passed to `a4.data.index` for verbosity. Defaults to `FALSE`.
+
+- **Returns**: A matrix of expression counts where rows are genes and columns are samples from the series. Returns `NULL` if no samples match the series ID.
+
+- **Example**:
+  ```R
+  df_series <- a4.data.series(h5file, "GSE64016")
+  ```
+
+#### `a4.data.samples`
+
+Extracts expression data for a specific set of samples identified by their GEO accession IDs.
+
+- **Parameters**:
+  - `file`: Path to the ARCHS4 HDF5 file.
+  - `sample_ids`: A character vector of GEO accession IDs (e.g., `c("GSM12345", "GSM67890")`).
+  - `silent`: Logical; if `FALSE`, passed to `a4.data.index` for verbosity. Defaults to `FALSE`.
+
+- **Returns**: A matrix of expression counts where rows are genes and columns are the specified samples. Returns `NULL` if no samples match the IDs.
+
+- **Example**:
+  ```R
+  df_samples <- a4.data.samples(h5file, c("GSM1158284", "GSM1482938"))
+  ```
+
+#### `a4.data.index`
+
+A helper function that extracts expression data for specified sample and gene indices.
+
+- **Parameters**:
+  - `file`: Path to the ARCHS4 HDF5 file.
+  - `sample_idx`: Integer vector of sample indices to extract.
+  - `gene_idx`: Integer vector of gene indices to extract. Defaults to `integer(0)` (all genes).
+  - `silent`: Logical; if `FALSE`, allows verbosity (though not explicitly used here). Defaults to `FALSE`.
+
+- **Returns**: A transposed matrix of expression counts where rows are genes and columns are samples, with row names as gene symbols and column names as GEO accession IDs.
+
+- **Note**: This is typically called internally by other `a4.data.*` functions but can be used directly for custom index-based queries.
+
+- **Example**:
+  ```R
+  idx <- c(1, 2, 3)  # Example sample indices
+  exp_data <- a4.data.index(h5file, idx)
+  ```
 
 ### Utilities
 
