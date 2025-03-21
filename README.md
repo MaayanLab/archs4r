@@ -35,18 +35,19 @@ To get started with `archs4r`, you need R installed on your system. The package 
 ```R
  install.packages("devtools")
  ```
-2. **Install the `archs4` package**
-```R
-library("devtools")
-install_github("MaayanLab/archs4r")
-```
-3. **Manual install of `Bioconductor` dependencies**
+2. **Manual install of `Bioconductor` dependencies**
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("rhdf5")
 BiocManager::install("prerpocessCore")
 ```
+3. **Install the `archs4` package**
+```R
+library("devtools")
+install_github("MaayanLab/archs4r")
+```
+
 
 ### Obtaining ARCHS4 Data
 
