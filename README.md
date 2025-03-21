@@ -142,6 +142,7 @@ Metadata is grouped into **gene/transcripts** (depending on file), **info**, and
 |                | title                  | str     |
 |                | type                   | str     |
 
+<a id="a4.meta.meta"></a>
 #### `a4.meta.meta`
 
 Searches for samples whose metadata matches a given pattern across specified fields.
@@ -178,7 +179,7 @@ Retrieves all values for a specific metadata field from samples, genes, or trans
   samples <- a4.meta.field(h5file, "geo_accession")
   genes <- a4.meta.field(h5file, "symbol")
   ```
-
+<a id="a4.meta.samples"></a>
 #### `a4.meta.samples`
 
 Extracts metadata for a specific set of samples identified by their GEO accession IDs.
@@ -195,7 +196,7 @@ Extracts metadata for a specific set of samples identified by their GEO accessio
   ```R
   df_samples <- a4.meta.samples(h5file, c("GSM12345", "GSM67890"), meta_fields = c("title", "series_id"))
   ```
-
+<a id="a4.meta.series"></a>
 #### `a4.meta.series`
 
 Fetches metadata for all samples within a specified GEO series.
