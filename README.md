@@ -8,8 +8,8 @@
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
-    - [Quick Start Guide](#quick)
-    - [Metadata](#meta)
+    - [Quick Start Guide](#usage)
+    - [Metadata](#metadata)
     - [Data](#data)
     - [Utilities](#utilities)
 
