@@ -1,7 +1,7 @@
 Package: archs4r
 Type: Package
 Title: Official R package to load and extract data from ARCHS4 H5 files
-Version: 0.1.0
+Version: 1.0.1
 Author: Alexander Lachmann
 Maintainer: Alexander Lachmann <alexander.lachmann@mssm.edu>
 Description: ARCHS4r is the official R package for the ARCHS4 gene expresson resource. With this package you can easily download, extract data, and search metadata.
