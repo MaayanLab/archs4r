@@ -10,7 +10,11 @@ Encoding: UTF-8
 LazyData: true
 Depends:
   rhdf5,
-  preprocessCore
+  preprocessCore,
+  stringr,
+  bit64,
+  jsonlite,
+  dplyr
 Imports:
   stringr,
   bit64,
