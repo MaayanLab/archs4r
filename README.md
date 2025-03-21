@@ -9,7 +9,7 @@
 - [Installation](#installation)
 - [Obtaining ARCHS4 Data](#obtaining-archs4-data)
 - [Usage](#usage)
-    - [Quick Start Guide](#usage)
+    - [🚀 Quick Start Guide](#usage)
     - [Metadata](#metadata)
         - [a4.meta.meta](#a4.meta.meta) - Search metadata across fields
         - [a4.meta.field](#a4.meta.field) - Retrieve values for a specific metadata field
@@ -59,7 +59,7 @@ The archs4r package requires ARCHS4 data files in HDF5 format, which contain gen
 
 The archs4r package is organized into three main modules: Metadata, Data, and Utilities. Below are detailed descriptions and examples for each.
 
-### Quick Start Guide
+### 🚀 Quick Start Guide
 
 This workflow provides a foundation for analyzing myoblast-related RNA-seq data from ARCHS4. Adjust parameters (e.g., search_term, readThreshold) as needed for your research question.
 
