@@ -12,11 +12,13 @@ a4.data.meta <- function(file, search_term,
       # Find indices where the search term is present using regular expression matching
       matches <- which(grepl(search_term, meta_values, perl = TRUE, ignore.case = TRUE))
       idx <- union(idx, matches)
+      h5closeAll()
   }
   if (remove_sc) {
     # Read the single-cell probability values and select those below 0.5
     singleprob <- h5read(file, "meta/samples/singlecellprobability")
     idx <- intersect(idx, which(singleprob < 0.5))
+    h5closeAll()
   }
   idx <- sort(unique(idx))
   counts <- a4.data.index(file, idx, silent = silent)
