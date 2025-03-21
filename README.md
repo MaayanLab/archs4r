@@ -11,14 +11,13 @@ To get started with `archs4r`, you need R installed on your system. The package 
 
 1. **Install the `devtools` package** (if not already installed):
    ```R
- install.packages("devtools")
- ```
-
-```R
-install.packages("devtools")  # or "remotes"
-library("devtools")
-install_github("MaayanLab/archs4r")
-```
+    install.packages("devtools")
+    ```
+2. **Install the `archs4` package**
+   ```R
+   library("devtools")
+   install_github("MaayanLab/archs4r")
+   ```
 
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
