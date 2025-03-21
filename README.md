@@ -11,8 +11,21 @@
 - [Usage](#usage)
     - [Quick Start Guide](#usage)
     - [Metadata](#metadata)
+        - [a4.meta.meta](#a4.meta.meta) - Search metadata across fields
+        - [a4.meta.field](#a4.meta.field) - Retrieve values for a specific metadata field
+        - [a4.meta.samples](#a4.meta.samples) - Extract metadata for specific samples
+        - [a4.meta.series](#a4.meta.series) - Fetch metadata for a GEO series
     - [Data](#data)
+        - [a4.data.meta](#a4.data.meta) - Fetch expression data by metadata search
+        - [a4.data.rand](#a4.data.rand) - Randomly sample expression data
+        - [a4.data.series](#a4.data.series) - Get expression data for a GEO series
+        - [a4.data.samples](#a4.data.samples) - Extract expression data for specific samples
+        - [a4.data.index](#a4.data.index) - Helper function for index-based data extraction
     - [Utilities](#utilities)
+        - [a4.ls](#a4.ls) - List ARCHS4 HDF5 file structure
+        - [a4.normalize](#a4.normalize) - Normalize expression count matrix
+        - [a4.aggregate_duplicate_genes](#a4.aggregate_duplicate_genes) - Aggregate duplicate gene entries
+        - [a4.filter_genes](#a4.filter_genes) - Filter genes by read threshold
 
 ## Installation
 
@@ -86,7 +99,7 @@ The **Metadata** module in `archs4r` provides tools to extract and query metadat
 
 #### Supported metadata fields
 
-Metadata is grouped into **gene/transcripts** (depending on file), **info**, and **samples**.
+Metadata is grouped into **gene/transcripts** (depending on file), **info**, and **samples**. List file content using **a4.ls(h5file)**.
 
 | Group          | Field                  | Type    |
 |----------------|------------------------|---------|
@@ -292,9 +305,6 @@ A helper function that extracts expression data for specified sample and gene in
   idx <- c(1, 2, 3)  # Example sample indices
   exp_data <- a4.data.index(h5file, idx)
   ```
-
-Below is the Markdown documentation for the **Utilities** module, rewritten and expanded based on the provided description and code. It includes function descriptions, parameters, return values, and examples, formatted for inclusion in a README.
-
 
 ### Utilities
 
