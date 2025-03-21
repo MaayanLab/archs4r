@@ -162,6 +162,7 @@ Searches for samples whose metadata matches a given pattern across specified fie
   df_meta <- a4.meta.meta(h5file, "liver", meta_fields = c("title", "source_name_ch1"), remove_sc = TRUE)
   ```
 
+<a id="a4.meta.field"></a>
 #### `a4.meta.field`
 
 Retrieves all values for a specific metadata field from samples, genes, or transcripts.
