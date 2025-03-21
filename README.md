@@ -7,7 +7,7 @@
 
 ## Table of Contents
 - [Installation](#installation)
-- [Obtaining ARCHS4 Data](#Obtaining ARCHS4 Data)
+- [Obtaining ARCHS4 Data](#obtaining-archs4-data)
 - [Usage](#usage)
     - [Quick Start Guide](#usage)
     - [Metadata](#metadata)
