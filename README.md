@@ -250,24 +250,96 @@ A helper function that extracts expression data for specified sample and gene in
   exp_data <- a4.data.index(h5file, idx)
   ```
 
+Below is the Markdown documentation for the **Utilities** module, rewritten and expanded based on the provided description and code. It includes function descriptions, parameters, return values, and examples, formatted for inclusion in a README.
+
+
 ### Utilities
 
-The utilities module contains some helpful functions such as data normalization and gene filtering. Gene symbols are not unique and by aggregating the gene rows are deduplicated by summing up all counts belonging to the same gene symbol. For normalization there is quantile normalization, TMM, and CPM.
+The **Utilities** module in `archs4r` offers a set of helper functions for preprocessing and analyzing ARCHS4 expression data. These include tools for inspecting file structure, normalizing count matrices, filtering genes, and aggregating duplicate gene entries. Supported normalization methods include quantile normalization, log quantile normalization, counts per million (CPM), and trimmed mean of M-values (TMM).
 
-```R
-library("archs4r")
+#### `a4.ls`
 
-h5file = "human_gene_v2.latest.h5"
+Lists the structure and fields of an ARCHS4 HDF5 file, including datasets under `/data`, `/meta/genes`, `/meta/info`, and `/meta/samples`.
 
-# List H5 file structure and fields
-a4.ls(h5file)
+- **Parameters**:
+  - `h5file`: Path to the ARCHS4 HDF5 file (e.g., `"human_gene_v2.latest.h5"`).
 
-exp = a4.data.rand(h5file, 100)
-normalized_exp = a4.normalize((exp, method = "log_quantile") # method options: log_quantile, cpm, tmm, quantile
+- **Returns**: A data frame with columns `group`, `name`, `otype`, `dclass`, and `dim`, detailing the file’s structure.
 
-# filter genes with low expression
-fexp = a4.filter_genes(exp, readThreshold = 20, sampleThreshold = 0.02, deterministic = TRUE, aggregate = TRUE)
+- **Example**:
+  ```R
+  library(archs4r)
+  h5file <- "human_gene_v2.latest.h5"
+  structure <- a4.ls(h5file)
+  ```
 
-# Merge counts when ensembl ids point to the sample gene symbol. Counts are added.
-dexp = a4.aggregate_duplicate_genes(exp)
-```
+Here’s an expanded version of the Markdown documentation for the `a4.normalize` function, with detailed explanations of each normalization option to help users understand their purpose and application:
+
+```markdown
+#### `a4.normalize`
+
+Normalizes an expression count matrix using a specified method to adjust for sequencing depth, library size differences, or other technical biases in RNA-seq data. This function supports four normalization techniques: quantile normalization (`"quantile"`), log quantile normalization (`"log_quantile"`), counts per million (`"cpm"`), and trimmed mean of M-values (`"tmm"`), each suited to different analysis scenarios.
+
+- **Parameters**:
+  - `counts`: A matrix or data frame of raw expression counts, where rows represent genes and columns represent samples.
+  - `method`: A string specifying the normalization method:
+    - `"quantile"`: Applies quantile normalization to force all samples to have the same distribution of counts, useful for removing technical variation while preserving biological differences.
+    - `"log_quantile"`: Applies quantile normalization to log2-transformed counts (log2(counts + 1)), reducing the impact of extreme values and stabilizing variance across samples. This is the default method.
+    - `"cpm"`: Normalizes counts to counts per million, scaling each sample’s counts by its total library size divided by 1 million, providing a simple measure of relative expression.
+    - `"tmm"`: Uses the trimmed mean of M-values method on log2-transformed counts (log2(counts + 1)) to compute normalization factors that adjust for library size and composition biases, trimming outliers to improve robustness.
+    Defaults to `"log_quantile"`.
+  - `tmm_outlier`: Numeric; the percentage (e.g., `0.05` for 5%) of extreme values to trim from each end when calculating TMM normalization factors. Only used with `method = "tmm"`. Defaults to `0.05`.
+
+- **Returns**: A normalized matrix with the same row names (gene symbols) and column names (sample IDs) as the input, containing adjusted expression values.
+
+- **Normalization Options Explained**:
+  - **`quantile`**: This method assumes that the underlying distribution of gene expression should be similar across samples. It ranks the counts within each sample, then replaces them with values from a reference distribution (typically the average quantile across all samples). It’s effective for removing technical noise but may obscure subtle biological differences if sample conditions vary widely.
+  - **`log_quantile`**: Similar to `"quantile"`, but first transforms the counts to a log2 scale (adding 1 to avoid log(0)) before normalization. The log transformation reduces the influence of highly expressed genes, making it suitable for datasets with skewed distributions or when downstream analyses (e.g., differential expression) assume log-normal data. This is the default due to its balance of robustness and interpretability.
+  - **`cpm`**: Converts raw counts to counts per million by dividing each count by the sample’s total count and multiplying by 1 million. This simple scaling accounts for differences in sequencing depth but does not adjust for gene length or composition biases, making it a quick option for exploratory analysis or when absolute expression levels are less critical.
+  - **`tmm`**: The trimmed mean of M-values method calculates a normalization factor for each sample based on the log2-transformed counts, trimming a specified percentage of extreme values (controlled by `tmm_outlier`) to reduce the impact of outliers (e.g., highly expressed or rare genes). It assumes most genes are not differentially expressed and adjusts for both library size and RNA composition differences, making it robust for differential expression studies.
+
+- **Example**:
+  ```R
+  library(archs4r)
+  h5file <- "human_gene_v2.latest.h5"
+  exp <- a4.data.rand(h5file, 100)  # Get 100 random samples
+  # Normalize with log quantile (default)
+  normalized_exp <- a4.normalize(exp, method = "log_quantile")
+  # Normalize with CPM
+  cpm_exp <- a4.normalize(exp, method = "cpm")
+  # Normalize with TMM, trimming 10% outliers
+  tmm_exp <- a4.normalize(exp, method = "tmm", tmm_outlier = 0.10)
+  ```
+
+
+#### `a4.aggregate_duplicate_genes`
+
+Aggregates duplicate gene entries by summing their counts.
+
+- **Parameters**:
+  - `exp`: A matrix or data frame of expression counts with gene names as row names.
+
+- **Returns**: A data frame with deduplicated gene rows, where counts for duplicate gene symbols are summed.
+
+- **Example**:
+  ```R
+  dexp <- a4.aggregate_duplicate_genes(exp)
+  ```
+
+#### `a4.filter_genes`
+
+Filters genes based on a minimum read threshold across a fraction of samples.
+
+- **Parameters**:
+  - `exp`: A matrix or data frame of expression counts.
+  - `readThreshold`: Numeric; minimum count threshold for a gene to be retained. Defaults to `20`.
+  - `sampleThreshold`: Numeric; minimum fraction of samples where the count exceeds `readThreshold`. Defaults to `0.02`.
+  - `deterministic`: Logical; if `TRUE`, sets a fixed seed (`42`) for reproducibility. Defaults to `TRUE`.
+  - `aggregate`: Logical; if `TRUE`, aggregates duplicate genes before filtering. Defaults to `TRUE`.
+
+- **Returns**: A filtered matrix or data frame with only genes meeting the criteria.
+
+- **Example**:
+  ```R
+  fexp <- a4.filter_genes(exp, readThreshold = 20, sampleThreshold = 0.02)
+  ```
