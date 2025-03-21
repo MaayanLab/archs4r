@@ -18,7 +18,7 @@ To get started with `archs4r`, you need R installed on your system. The package 
 library("devtools")
 install_github("MaayanLab/archs4r")
 ```
-3. **Manual install of dependencies**
+3. **Manual install of `Bioconductor` dependencies**
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
