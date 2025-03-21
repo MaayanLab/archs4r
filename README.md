@@ -38,7 +38,6 @@ The archs4r package requires ARCHS4 data files in HDF5 format, which contain gen
 The archs4r package is organized into three main modules: Metadata, Data, and Utilities. Below are detailed descriptions and examples for each.
 
 ### Metadata
-### Metadata
 
 The **Metadata** module in `archs4r` provides tools to extract and query metadata associated with genes, transcripts, and samples from ARCHS4 HDF5 files. These functions allow users to filter and retrieve metadata based on search terms, specific fields, sample IDs, or GEO series IDs.
 
@@ -53,7 +52,7 @@ Searches for samples whose metadata matches a given pattern across specified fie
   - `remove_sc`: Logical; if `TRUE`, filters out samples with a single-cell probability ≥ 0.5. Defaults to `FALSE`.
   - `silent`: Logical; if `FALSE`, prints the number of matches per field. Defaults to `FALSE`.
 
-- **Returns**: A transposed data frame where rows are samples matching the `search_term` and columns are the metadata fields.
+- **Returns**: A data frame where rows are samples matching the `search_term` and columns are the metadata fields.
 
 - **Example**:
   ```R
