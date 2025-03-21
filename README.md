@@ -41,6 +41,51 @@ The archs4r package is organized into three main modules: Metadata, Data, and Ut
 
 The **Metadata** module in `archs4r` provides tools to extract and query metadata associated with genes, transcripts, and samples from ARCHS4 HDF5 files. These functions allow users to filter and retrieve metadata based on search terms, specific fields, sample IDs, or GEO series IDs.
 
+#### Supported metadata fields
+
+Metadata is grouped into **gene/transcripts** (depending on file), **info**, and **samples**.
+
+| Group          | Field                  | Type    |
+|----------------|------------------------|---------|
+| **meta/genes** | biotype                | str     |
+|                | ensembl_gene           | str     |
+|                | symbol                 | str     |
+| **meta/info**  | author                 | str     |
+|                | contact                | str     |
+|                | creation-date          | str     |
+|                | laboratory             | str     |
+|                | version                | str     |
+| **meta/samples** | alignedreads         | float64 |
+|                | channel_count          | str     |
+|                | characteristics_ch1    | str     |
+|                | contact_address        | str     |
+|                | contact_city           | str     |
+|                | contact_country        | str     |
+|                | contact_institute      | str     |
+|                | contact_name           | str     |
+|                | contact_zip            | str     |
+|                | data_processing        | str     |
+|                | extract_protocol_ch1   | str     |
+|                | geo_accession          | str     |
+|                | instrument_model       | str     |
+|                | last_update_date       | str     |
+|                | library_selection      | str     |
+|                | library_source         | str     |
+|                | library_strategy       | str     |
+|                | molecule_ch1           | str     |
+|                | organism_ch1           | str     |
+|                | platform_id            | str     |
+|                | relation               | str     |
+|                | sample                 | str     |
+|                | series_id              | str     |
+|                | singlecellprobability  | float64 |
+|                | source_name_ch1        | str     |
+|                | status                 | str     |
+|                | submission_date        | str     |
+|                | taxid_ch1              | str     |
+|                | title                  | str     |
+|                | type                   | str     |
+
 #### `a4.meta.meta`
 
 Searches for samples whose metadata matches a given pattern across specified fields.
