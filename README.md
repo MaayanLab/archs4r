@@ -76,11 +76,11 @@ structure <- a4.ls(h5file)
 print(structure)
 
 # Extract myoblast expression
-myoblast_exp <- a4.data.meta(h5file, "myoblast", c("title", "source_name_ch1"), remove_sc = TRUE)
+myoblast_exp <- a4.data.meta(h5file, "myoblast", c("title", "source_name_ch1", "characteristics_ch1"), remove_sc = TRUE)
 
 # Get metadata for samples
 myoblast_samples <- colnames(myoblast_exp)
-myoblast_meta <- a4.meta.samples(h5file, myoblast_samples, c("geo_accession", "title", "source_name_ch1", "series_id"))
+myoblast_meta <- a4.meta.samples(h5file, myoblast_samples, c("geo_accession", "title", "source_name_ch1", "series_id", "characteristics_ch1"))
 
 # Filter genes and aggregate duplicates
 filtered_exp <- a4.filter_genes(myoblast_exp, readThreshold = 20, sampleThreshold = 0.02, aggregate = TRUE)
