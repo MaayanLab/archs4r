@@ -275,7 +275,6 @@ Lists the structure and fields of an ARCHS4 HDF5 file, including datasets under 
 
 Here’s an expanded version of the Markdown documentation for the `a4.normalize` function, with detailed explanations of each normalization option to help users understand their purpose and application:
 
-```markdown
 #### `a4.normalize`
 
 Normalizes an expression count matrix using a specified method to adjust for sequencing depth, library size differences, or other technical biases in RNA-seq data. This function supports four normalization techniques: quantile normalization (`"quantile"`), log quantile normalization (`"log_quantile"`), counts per million (`"cpm"`), and trimmed mean of M-values (`"tmm"`), each suited to different analysis scenarios.
