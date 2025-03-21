@@ -1,13 +1,18 @@
 
 ![archs4r](https://github.com/user-attachments/assets/ad4111c0-9ad4-42a2-87fa-bd03d332948a)
 
-# archs4r
-R package to load and query ARCHS4 data in R. Data can be downloaded from: https://archs4.org/download
+# archs4r - Official R Package for ARCHS4 Data
 
+**archs4r** is an R package designed to streamline the loading and querying of ARCHS4 data directly within the R environment. ARCHS4 (All RNA-seq and ChIP-seq Sample and Signature Search) is a comprehensive resource offering access to a vast collection of gene expression data derived from RNA-seq experiments. This package empowers users to efficiently access, manipulate, and analyze ARCHS4 data for a wide range of bioinformatics applications.
 
 ## Installation
 
-Install directly from GitHub:
+To get started with `archs4r`, you need R installed on your system. The package depends on the `rhdf5` package from Bioconductor to handle HDF5 files. Follow these steps to install `archs4r`:
+
+1. **Install the `devtools` package** (if not already installed):
+   ```R
+ install.packages("devtools")
+ ```
 
 ```R
 install.packages("devtools")  # or "remotes"
