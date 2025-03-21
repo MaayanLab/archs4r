@@ -218,6 +218,7 @@ Fetches metadata for all samples within a specified GEO series.
 
 The **Data** module in `archs4r` provides functions to retrieve gene expression matrices from ARCHS4 HDF5 files based on metadata searches, random sampling, GEO series, or specific sample IDs. These functions rely on the underlying `a4.data.index` helper function to extract expression data.
 
+<a id="a4.data.meta"></a>
 #### `a4.data.meta`
 
 Fetches expression data for samples whose metadata matches a given search term across specified fields.
@@ -238,6 +239,7 @@ Fetches expression data for samples whose metadata matches a given search term a
   df_meta <- a4.data.meta(h5file, "liver", meta_fields = c("title", "source_name_ch1"), remove_sc = TRUE)
   ```
 
+<a id="a4.data.rand"></a>
 #### `a4.data.rand`
 
 Randomly selects a specified number of samples and returns their expression data.
@@ -255,7 +257,7 @@ Randomly selects a specified number of samples and returns their expression data
   ```R
   df_rand <- a4.data.rand(h5file, 20, seed = 123, remove_sc = TRUE)
   ```
-
+<a id="a4.data.series"></a>
 #### `a4.data.series`
 
 Retrieves expression data for all samples in a specified GEO series.
@@ -271,7 +273,7 @@ Retrieves expression data for all samples in a specified GEO series.
   ```R
   df_series <- a4.data.series(h5file, "GSE64016")
   ```
-
+<a id="a4.data.samples"></a>
 #### `a4.data.samples`
 
 Extracts expression data for a specific set of samples identified by their GEO accession IDs.
@@ -287,7 +289,7 @@ Extracts expression data for a specific set of samples identified by their GEO a
   ```R
   df_samples <- a4.data.samples(h5file, c("GSM1158284", "GSM1482938"))
   ```
-
+<a id="a4.data.index"></a>
 #### `a4.data.index`
 
 A helper function that extracts expression data for specified sample and gene indices.
@@ -312,6 +314,7 @@ A helper function that extracts expression data for specified sample and gene in
 
 The **Utilities** module in `archs4r` offers a set of helper functions for preprocessing and analyzing ARCHS4 expression data. These include tools for inspecting file structure, normalizing count matrices, filtering genes, and aggregating duplicate gene entries. Supported normalization methods include quantile normalization, log quantile normalization, counts per million (CPM), and trimmed mean of M-values (TMM).
 
+<a id="a4.ls"></a>
 #### `a4.ls`
 
 Lists the structure and fields of an ARCHS4 HDF5 file, including datasets under `/data`, `/meta/genes`, `/meta/info`, and `/meta/samples`.
@@ -330,6 +333,7 @@ Lists the structure and fields of an ARCHS4 HDF5 file, including datasets under 
 
 Here’s an expanded version of the Markdown documentation for the `a4.normalize` function, with detailed explanations of each normalization option to help users understand their purpose and application:
 
+<a id="a4.normalize"></a>
 #### `a4.normalize`
 
 Normalizes an expression count matrix using a specified method to adjust for sequencing depth, library size differences, or other technical biases in RNA-seq data. This function supports four normalization techniques: quantile normalization (`"quantile"`), log quantile normalization (`"log_quantile"`), counts per million (`"cpm"`), and trimmed mean of M-values (`"tmm"`), each suited to different analysis scenarios.
@@ -365,7 +369,7 @@ Normalizes an expression count matrix using a specified method to adjust for seq
   tmm_exp <- a4.normalize(exp, method = "tmm", tmm_outlier = 0.10)
   ```
 
-
+<a id="a4.aggregate_duplicate_genes"></a>
 #### `a4.aggregate_duplicate_genes`
 
 Aggregates duplicate gene entries by summing their counts.
@@ -379,7 +383,7 @@ Aggregates duplicate gene entries by summing their counts.
   ```R
   dexp <- a4.aggregate_duplicate_genes(exp)
   ```
-
+<a id="a4.filter_genes"></a>
 #### `a4.filter_genes`
 
 Filters genes based on a minimum read threshold across a fraction of samples.
