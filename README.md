@@ -24,6 +24,9 @@ BiocManager::install("rhdf5")
 ## Usage
 
 ### Metadata
+
+The metadata module allows the extraction of metadata about genes/transcripts and samples.
+
 ```R
 h5file = "human_gene_v2.latest.h5"
 
@@ -43,6 +46,9 @@ df_samples <- a4.meta.samples(h5file, c("GSM12345", "GSM67890"))
 ```
 
 ### Data
+
+The data module has endpoints similar to those of the metadata module but instead returns gene/transcript expression matrices.
+
 ```R
 h5file = "human_gene_v2.latest.h5"
 
@@ -60,6 +66,8 @@ df_samples <- a4.data.samples(h5file, c("GSM1158284","GSM1482938","GSM1562817"))
 ```
 
 ### Utilities
+
+The utilities module contains some helpful functions such as data normalization and gene filtering. Gene symbols are not unique and by aggregating the gene rows are deduplicated by summing up all counts belonging to the same gene symbol. For normalization there is quantile normalization, TMM, and CPM.
 
 ```R
 h5file = "human_gene_v2.latest.h5"
